@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro del Caos</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      transition: all 0.05s linear;
+      user-select: none;
+      cursor: crosshair;
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-family: Papyrus, Comic Sans MS, cursive;
+      background: lime;
+    }
+
+    #contenedorDelSufrimiento {
+      width: 90vw;
+      height: 90vh;
+      border: 11px dashed magenta;
+      background: repeating-linear-gradient(
+        45deg,
+        yellow,
+        yellow 10px,
+        cyan 10px,
+        cyan 20px
+      );
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transform: rotate(-1deg);
+    }
+
+    h1 {
+      font-size: 53px;
+      color: red;
+      text-shadow: 5px 5px 0 cyan;
+      animation: temblar 0.2s infinite;
+      margin-bottom: 40px;
+    }
+
+    @keyframes temblar {
+      0% { transform: translateX(-2px) rotate(-2deg); }
+      50% { transform: translateX(3px) rotate(1deg); }
+      100% { transform: translateX(-2px) rotate(-2deg); }
+    }
+
+    #laPantallaQueNoSirve {
+      font-size: 8px;
+      color: black;
+      background: white;
+      padding: 20px;
+      border: 8px ridge red;
+      width: 340px;
+      min-height: 120px;
+      text-align: center;
+      font-family: Comic Sans MS;
+      transform: skew(-10deg) rotate(3deg);
+      word-break: break-all;
+      position: fixed;
+      top: 20%;
+      left: 10%;
+      z-index: 999999;
+      display: block;
+      opacity: 1;
+      visibility: visible;
+      animation: moverCronometro 3s infinite alternate ease-in-out;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    @keyframes moverCronometro {
+      0% {
+        left: 2%;
+        top: 18%;
+        transform: rotate(-8deg) scale(0.9);
+      }
+
+      25% {
+        left: 70%;
+        top: 10%;
+        transform: rotate(12deg) scale(1.1);
+      }
+
+      50% {
+        left: 40%;
+        top: 70%;
+        transform: rotate(-15deg) scale(0.8);
+      }
+
+      75% {
+        left: 5%;
+        top: 60%;
+        transform: rotate(7deg) scale(1.2);
+      }
+
+      100% {
+        left: 65%;
+        top: 25%;
+        transform: rotate(-4deg) scale(1);
+      }
+    }
+
+    button {
+      padding: 20px;
+      border-radius: 0;
+      border: 7px dotted black;
+      font-size: 20px;
+      font-weight: bold;
+      position: absolute;
+      cursor: pointer;
+      box-shadow:
+        0 0 0 4px yellow,
+        0 0 20px red,
+        0 0 40px cyan;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      animation: destruirRetinas 0.3s infinite alternate;
+      filter: saturate(300%);
+    }
+
+    @keyframes destruirRetinas {
+      from {
+        transform: scale(1) rotate(-2deg);
+      }
+
+      to {
+        transform: scale(1.08) rotate(2deg);
+      }
+    }
+
+    #startDelInfierno {
+      background: purple;
+      color: lime;
+      top: 50%;
+      left: 50%;
+    }
+
+    #pausaExistencial {
+      background: orange;
+      color: black;
+      top: 70%;
+      left: 20%;
+      transform: rotate(7deg);
+    }
+
+    #ayudaPeroNo {
+      background: red;
+      color: white;
+      top: 15%;
+      right: 10%;
+      transform: scale(1.3) rotate(-12deg);
+    }
+
+    #bannerFake {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: gold;
+      color: blue;
+      border: 8px groove hotpink;
+      padding: 30px;
+      font-size: 32px;
+      font-weight: bold;
+      animation: bailar 0.5s infinite;
+      z-index: 999;
+    }
+
+    @keyframes bailar {
+      0% { transform: rotate(-2deg) scale(1); }
+      50% { transform: rotate(3deg) scale(1.1); }
+      100% { transform: rotate(-2deg) scale(1); }
+    }
+
+    marquee {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background: black;
+      color: lime;
+      font-size: 30px;
+      z-index: 1000;
+    }
+
+    .publicidadMolesta {
+      position: absolute;
+      background: white;
+      border: 4px solid red;
+      padding: 10px;
+      font-size: 14px;
+      transform: rotate(calc(var(--rot) * 1deg));
+    }
+
+    #cronometroVisible {
+      position: fixed;
+      z-index: 99999;
+      font-family: "Comic Sans MS", cursive;
+      font-size: 80px;
+      font-weight: 900;
+      color: red;
+      background: yellow;
+      border: 10px dashed navy;
+      padding: 15px 30px;
+      text-shadow:
+        4px 4px 0 blue,
+        -4px -4px 0 green,
+        8px -4px 0 purple;
+      box-shadow:
+        0 0 0 8px hotpink,
+        0 0 40px orange,
+        inset 0 0 30px rgba(0,0,0,0.3);
+      letter-spacing: 8px;
+      white-space: nowrap;
+      pointer-events: none;
+      animation: volarPorTodos 4s infinite alternate ease-in-out;
+      transform-origin: center center;
+    }
+
+    #etiquetaFea {
+      display: block;
+      font-size: 18px;
+      text-align: center;
+      background: black;
+      color: lime;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-shadow: none;
+      border: 3px solid cyan;
+      padding: 2px 6px;
+    }
+
+    @keyframes volarPorTodos {
+      0%   { top: 5%;  left: 5%;   transform: rotate(-8deg)  scale(1);    background: yellow;  color: red;   border-color: navy;   }
+      12%  { top: 10%; left: 65%;  transform: rotate(14deg)  scale(1.15); background: cyan;    color: black; border-color: magenta;}
+      25%  { top: 55%; left: 50%;  transform: rotate(-5deg)  scale(0.85); background: hotpink; color: white; border-color: green;  }
+      38%  { top: 70%; left: 5%;   transform: rotate(20deg)  scale(1.2);  background: lime;    color: navy;  border-color: red;    }
+      50%  { top: 30%; left: 30%;  transform: rotate(-12deg) scale(0.9);  background: orange;  color: blue;  border-color: purple; }
+      63%  { top: 5%;  left: 55%;  transform: rotate(6deg)   scale(1.1);  background: magenta; color: yellow;border-color: cyan;   }
+      75%  { top: 65%; left: 70%;  transform: rotate(-18deg) scale(1.05); background: purple;  color: lime;  border-color: orange; }
+      88%  { top: 40%; left: 10%;  transform: rotate(10deg)  scale(0.95); background: red;     color: white; border-color: yellow; }
+      100% { top: 15%; left: 40%;  transform: rotate(-3deg)  scale(1.3);  background: cyan;    color: black; border-color: hotpink;}
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cronometroVisible">
+    <span id="etiquetaFea">⏱ TIEMPO RESTANTE ⏱</span>
+    <span id="tiempoReal">25:00</span>
+  </div>
+
+  <marquee scrollamount="20">
+    🚨 PRODUCTIVIDAD DETECTADA 🚨 NO ESTÁ PERMITIDO DESCANSAR 🚨
+  </marquee>
+
+  <div id="contenedorDelSufrimiento">
+
+    <h1>POMODORO 3000 EXTREME EDITION</h1>
+
+    <div id="laPantallaQueNoSirve">
+      Tiempo restante expresado en micro-quincenas interplanetarias:
+      <br><br>
+      0.000000000000
+    </div>
+
+    <!--
+      Sí, el botón se mueve.
+      Porque claramente si no podés clickear un botón
+      tampoco merecés gestionar tu tiempo.
+    -->
+    <button id="startDelInfierno">INICIAR TAL VEZ</button>
+
+    <!--
+      Pausar está mal.
+      La productividad tóxica es la única productividad.
+    -->
+    <button id="pausaExistencial">Pausa (?)</button>
+
+    <!--
+      El usuario cree que esto es ayuda.
+      Qué adorable.
+    -->
+    <button id="ayudaPeroNo">AYUDA</button>
+
+    <!--
+      Banner totalmente legítimo y para nada sospechoso.
+      Nada escondido atrás. Guiño guiño.
+    -->
+    <div id="bannerFake">
+      🎉 HAS GANADO UN IPHONE 🎉
+      <br>
+      CLICK AQUÍ URGENTE
+    </div>
+
+  </div>
+
+  <script>
+
+    // Variables cuidadosamente nombradas por un mapache con cafeína.
+    let laCosaQueCuenta = 25 * 60 * 1000;
+    let noToquesEsto = null;
+    let estaLaDesgraciaCorriendo = false;
+
+    const coloresQueLastiman = [
+      'lime',
+      'fuchsia',
+      'yellow',
+      'cyan',
+      'orange',
+      'hotpink'
+    ];
+
+    const laPantallaQueNoSirve = document.getElementById('laPantallaQueNoSirve');
+    const startDelInfierno = document.getElementById('startDelInfierno');
+    const pausaExistencial = document.getElementById('pausaExistencial');
+    const ayudaPeroNo = document.getElementById('ayudaPeroNo');
+    const bannerFake = document.getElementById('bannerFake');
+    const tiempoReal = document.getElementById('tiempoReal');
+
+    function formatearTiempo(ms) {
+      const totalSeg = Math.max(0, Math.ceil(ms / 1000));
+      const min = String(Math.floor(totalSeg / 60)).padStart(2, '0');
+      const seg = String(totalSeg % 60).padStart(2, '0');
+      return `${min}:${seg}`;
+    }
+
+    // Ocultar parcialmente el botón útil detrás de publicidad basura.
+    startDelInfierno.style.zIndex = '1';
+    bannerFake.style.zIndex = '9999';
+
+    function actualizarPantallaDelDolor() {
+      // Convertimos a micro-quincenas porque los segundos son demasiado fáciles.
+      const microQuincenas = laCosaQueCuenta / 1209600000000;
+
+      laPantallaQueNoSirve.innerHTML = `
+        <div style="font-size:7px; transform:rotate(${Math.random() * 20 - 10}deg)">
+          ⏳ ${microQuincenas.toFixed(15)} MICRO-QUINCENAS CÓSMICAS ⏳
+        </div>
+
+        <br>
+
+        <div style="font-size:6px; color:${coloresQueLastiman[Math.floor(Math.random() * coloresQueLastiman.length)]}">
+          ${laCosaQueCuenta} milisegundos miserables.
+        </div>
+
+        <marquee scrollamount="${Math.floor(Math.random() * 25) + 5}">
+          EL TIEMPO AVANZA Y TU PRODUCTIVIDAD TAMBIÉN DEBERÍA
+        </marquee>
+      `;
+
+      // Cronómetro visible y real
+      tiempoReal.textContent = formatearTiempo(laCosaQueCuenta);
+    }
+
+    function cambiarFondoComoAtaquePsicologico() {
+      const colorRandom = coloresQueLastiman[
+        Math.floor(Math.random() * coloresQueLastiman.length)
+      ];
+
+      document.body.style.background = colorRandom;
+
+      document.body.style.transform = `rotate(${Math.random() * 2 - 1}deg)`;
+    }
+
+    function empezarLaCatastrofeTemporal() {
+      if (estaLaDesgraciaCorriendo) return;
+
+      estaLaDesgraciaCorriendo = true;
+
+      // Excelente idea: actualizar el fondo constantemente.
+      noToquesEsto = setInterval(() => {
+        laCosaQueCuenta -= 1000;
+
+        actualizarPantallaDelDolor();
+        cambiarFondoComoAtaquePsicologico();
+
+        // Agregamos publicidad random porque el usuario claramente ama eso.
+        generarPublicidadInutil();
+
+        if (laCosaQueCuenta <= 0) {
+          clearInterval(noToquesEsto);
+          estaLaDesgraciaCorriendo = false;
+
+          // Sonido molesto del navegador.
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+              alert('⏰ TERMINASTE. IMPRESIONANTE. AHORA VOLVÉ A TRABAJAR.');
+            }, i * 500);
+          }
+        }
+
+      }, 1000);
+    }
+
+    function generarPublicidadInutil() {
+      const basura = document.createElement('div');
+
+      basura.className = 'publicidadMolesta';
+      basura.style.left = Math.random() * window.innerWidth + 'px';
+      basura.style.top = Math.random() * window.innerHeight + 'px';
+      basura.style.setProperty('--rot', Math.random() * 50 - 25);
+
+      basura.innerText = [
+        '🔥 GANA DINERO DESDE CASA 🔥',
+        '😱 TU PC TIENE VIRUS 😱',
+        '💊 PRODUCTIVIDAD EN 3 PASOS 💊',
+        '📈 HACETE MILLONARIO EN 2 HORAS 📈'
+      ][Math.floor(Math.random() * 4)];
+
+      document.body.appendChild(basura);
+
+      setTimeout(() => {
+        basura.remove();
+      }, 3000);
+    }
+
+    let pacienciaDelUsuario = false;
+
+    startDelInfierno.addEventListener('mouseenter', () => {
+
+      // El botón sigue escapando,
+      // pero ahora le damos al usuario una microscópica posibilidad.
+
+      // Evita que se mueva 500 veces por segundo.
+      if (pacienciaDelUsuario) return;
+
+      pacienciaDelUsuario = true;
+
+      setTimeout(() => {
+        pacienciaDelUsuario = false;
+      }, 700);
+
+      const posicionActualX = startDelInfierno.offsetLeft;
+      const posicionActualY = startDelInfierno.offsetTop;
+
+      // Movimiento mucho más pequeño.
+      const randomX = posicionActualX + (Math.random() * 60 - 30);
+      const randomY = posicionActualY + (Math.random() * 40 - 20);
+
+      const limiteX = Math.max(0, Math.min(window.innerWidth - 220, randomX));
+      const limiteY = Math.max(0, Math.min(window.innerHeight - 120, randomY));
+
+      startDelInfierno.style.left = limiteX + 'px';
+      startDelInfierno.style.top = limiteY + 'px';
+
+      // Rotación apenas molesta.
+      startDelInfierno.style.transform = `scale(1.1) rotate(${Math.random() * 20 - 10}deg)`;
+    });
+
+    startDelInfierno.addEventListener('click', empezarLaCatastrofeTemporal);
+
+    pausaExistencial.addEventListener('click', () => {
+
+      // Triple confirmación.
+      const uno = confirm('¿Estás seguro?');
+      if (!uno) return;
+
+      const dos = confirm('¿REALMENTE seguro?');
+      if (!dos) return;
+
+      const tres = confirm('Pausar es de cobardes, ¿continuar?');
+      if (!tres) return;
+
+      clearInterval(noToquesEsto);
+      estaLaDesgraciaCorriendo = false;
+
+      alert('Cronómetro pausado. La decepción es inmensa.');
+    });
+
+    ayudaPeroNo.addEventListener('click', () => {
+
+      // Sorpresa.
+      clearInterval(noToquesEsto);
+
+      estaLaDesgraciaCorriendo = false;
+      laCosaQueCuenta = 25 * 60 * 1000;
+
+      actualizarPantallaDelDolor();
+
+      alert('El temporizador fue reiniciado. Gracias por pedir "ayuda".');
+    });
+
+    actualizarPantallaDelDolor();
+
+    // BONUS: mover el banner publicitario porque claramente eso ayuda.
+    setInterval(() => {
+      bannerFake.style.left = Math.random() * (window.innerWidth - 400) + 'px';
+      bannerFake.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+    }, 1500);
+
+  </script>
+</body>
+</html>
