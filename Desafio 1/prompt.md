@@ -23,3 +23,13 @@ El código debe ser funcional, pero llena los comentarios con sarcasmo sobre la 
 Usa variables con nombres confusos (ej: laCosaQueCuenta, noToquesEsto). 
 
 Genera el código completo en Canvas ahora.
+
+--- codigo
+
+Funciona bien, pero tiene el problema de que se escapa demasiado rapido el boton de iniciar, por lo que es muy dificil alcanzarlo (ya demasiado) modifica eso
+
+--- codigo
+
+Sigue moviendose muy rapido, haciendolo dificil (casi imposible) de clickear
+
+--- codigo

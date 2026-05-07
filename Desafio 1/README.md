@@ -11,6 +11,8 @@ Este repositorio contiene el Trabajo Práctico N° 1 de la materia IISAIA.
 
 El proyecto consiste en un Pomodoro Troll (`pomotroll.html`), una aplicación web de temporizador tipo Pomodoro con una interfaz caótica y molesta a propósito.
 
+Funciono luego de 2 iteraciones donde le boton se movia demasiado rapido para iniciar.
+
 ## Archivos
 
 - `pomotroll.html` — página principal del Pomodoro Troll
