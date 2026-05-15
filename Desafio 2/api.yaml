@@ -1,0 +1,338 @@
+openapi: 3.0.3
+
+info:
+  title: Projects & Tasks API
+  description: API de gestión de proyectos y tareas — contrato sin implementación.
+  version: 1.0.0
+
+tags:
+  - name: Projects
+    description: Operaciones sobre proyectos
+  - name: Tasks
+    description: Operaciones sobre tareas dentro de un proyecto
+
+paths:
+
+  # ──────────────────────────────────────────
+  # PROJECTS
+  # ──────────────────────────────────────────
+
+  /projects:
+    get:
+      tags: [Projects]
+      summary: Listar todos los proyectos
+      operationId: listProjects
+      responses:
+        "200":
+          description: Lista de proyectos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+    post:
+      tags: [Projects]
+      summary: Crear un proyecto
+      operationId: createProject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Proyecto creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 400
+                message: "El campo 'name' es obligatorio y no puede estar vacío."
+
+  /projects/{projectId}:
+    parameters:
+      - $ref: "#/components/parameters/projectId"
+
+    get:
+      tags: [Projects]
+      summary: Obtener un proyecto por ID
+      operationId: getProject
+      responses:
+        "200":
+          description: Proyecto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                code: 404
+                message: "No existe un proyecto con el ID indicado."
+
+    delete:
+      tags: [Projects]
+      summary: Eliminar un proyecto
+      operationId: deleteProject
+      responses:
+        "204":
+          description: Proyecto eliminado (sin contenido)
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ──────────────────────────────────────────
+  # TASKS  (nested bajo /projects/{projectId})
+  # ──────────────────────────────────────────
+
+  /projects/{projectId}/tasks:
+    parameters:
+      - $ref: "#/components/parameters/projectId"
+
+    get:
+      tags: [Tasks]
+      summary: Listar tareas de un proyecto
+      operationId: listTasks
+      responses:
+        "200":
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags: [Tasks]
+      summary: Crear una tarea en un proyecto
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Tarea creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /projects/{projectId}/tasks/{taskId}:
+    parameters:
+      - $ref: "#/components/parameters/projectId"
+      - $ref: "#/components/parameters/taskId"
+
+    get:
+      tags: [Tasks]
+      summary: Obtener una tarea por ID
+      operationId: getTask
+      responses:
+        "200":
+          description: Tarea encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Tarea o proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags: [Tasks]
+      summary: Eliminar una tarea
+      operationId: deleteTask
+      responses:
+        "204":
+          description: Tarea eliminada (sin contenido)
+        "404":
+          description: Tarea o proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ──────────────────────────────────────────
+  # ENDPOINT AGREGADO EN ITERACIÓN 2
+  # (requerimiento 5 — sin reescribir lo anterior)
+  # ──────────────────────────────────────────
+
+  /projects/{projectId}/tasks/{taskId}/complete:
+    parameters:
+      - $ref: "#/components/parameters/projectId"
+      - $ref: "#/components/parameters/taskId"
+
+    patch:
+      tags: [Tasks]
+      summary: Marcar una tarea como completada
+      operationId: completeTask
+      responses:
+        "200":
+          description: Tarea marcada como completada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Tarea o proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+# ──────────────────────────────────────────
+# COMPONENTS
+# ──────────────────────────────────────────
+
+components:
+
+  parameters:
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: ID único del proyecto
+      schema:
+        type: string
+        format: uuid
+        example: "a3bb189e-8bf9-3888-9912-ace4e6543002"
+
+    taskId:
+      name: taskId
+      in: path
+      required: true
+      description: ID único de la tarea
+      schema:
+        type: string
+        format: uuid
+        example: "c5dd189e-1af9-4578-bb12-bce4e6543099"
+
+  schemas:
+
+    Project:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a3bb189e-8bf9-3888-9912-ace4e6543002"
+        name:
+          type: string
+          example: "Rediseño del portal"
+        description:
+          type: string
+          example: "Actualización de la UI y mejoras de performance"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-15T10:00:00Z"
+
+    ProjectInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          example: "Rediseño del portal"
+        description:
+          type: string
+          example: "Actualización de la UI y mejoras de performance"
+
+    Task:
+      type: object
+      required: [id, projectId, title, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "c5dd189e-1af9-4578-bb12-bce4e6543099"
+        projectId:
+          type: string
+          format: uuid
+          example: "a3bb189e-8bf9-3888-9912-ace4e6543002"
+        title:
+          type: string
+          example: "Diseñar mockups de home"
+        description:
+          type: string
+          example: "Incluir versión mobile y desktop"
+        status:
+          type: string
+          enum: [pending, in_progress, done]
+          example: "pending"
+        dueDate:
+          type: string
+          format: date
+          example: "2026-06-01"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-05-15T10:05:00Z"
+
+    TaskInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          example: "Diseñar mockups de home"
+        description:
+          type: string
+          example: "Incluir versión mobile y desktop"
+        dueDate:
+          type: string
+          format: date
+          example: "2026-06-01"
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Recurso no encontrado"
